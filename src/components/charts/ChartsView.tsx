@@ -2,6 +2,7 @@ import { useProject } from '@/contexts/ProjectContext';
 import { GanttChart } from './GanttChart';
 import { BurndownChart } from './BurndownChart';
 import { VelocityChart } from './VelocityChart';
+import { Link } from 'react-router-dom';
 
 export function ChartsView() {
   const { mode } = useProject();
@@ -17,21 +18,19 @@ export function ChartsView() {
 
       <div className="grid gap-8">
         {mode === 'waterfall' && <GanttChart />}
-        
+
         {mode === 'agile' && (
           <>
             <BurndownChart />
             <VelocityChart />
+            <div className="rounded-xl border border-dashed border-border bg-muted/20 p-6 text-center text-sm text-muted-foreground">
+              Need a phase timeline? Open{' '}
+              <Link to="/gantt" className="text-primary underline underline-offset-2">
+                Timeline
+              </Link>{' '}
+              or switch to Waterfall mode for an embedded Gantt.
+            </div>
           </>
-        )}
-
-        {/* Show timeline for both modes */}
-        {mode === 'waterfall' || (
-          <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 text-center">
-            <p className="text-muted-foreground">
-              Switch to Waterfall mode to see the Gantt chart, or use the current Agile charts above
-            </p>
-          </div>
         )}
       </div>
     </div>

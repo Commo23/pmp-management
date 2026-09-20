@@ -124,16 +124,16 @@ export const sampleTasks: Task[] = [
   { id: 't8', title: 'Lessons Learned', description: 'Document project learnings', status: 'backlog', priority: 'low', phaseId: 'close', assignee: 'PM', createdAt: '2024-01-20' },
 ];
 
-// Sample Backlog Items
+// Sample Backlog Items (sprintId aligned with sampleSprints.items)
 export const sampleBacklog: BacklogItem[] = [
-  { id: 'b1', title: 'User Authentication', description: 'Implement login/logout functionality', storyPoints: 8, priority: 'high', type: 'feature', order: 1 },
-  { id: 'b2', title: 'Dashboard UI', description: 'Create main dashboard interface', storyPoints: 13, priority: 'high', type: 'feature', order: 2 },
-  { id: 'b3', title: 'API Integration', description: 'Connect to backend services', storyPoints: 5, priority: 'medium', type: 'technical', order: 3 },
-  { id: 'b4', title: 'Performance Optimization', description: 'Improve load times', storyPoints: 8, priority: 'medium', type: 'technical', order: 4 },
-  { id: 'b5', title: 'Mobile Responsive', description: 'Ensure mobile compatibility', storyPoints: 5, priority: 'medium', type: 'feature', order: 5 },
-  { id: 'b6', title: 'Fix Login Bug', description: 'Address session timeout issue', storyPoints: 3, priority: 'high', type: 'bug', order: 6 },
+  { id: 'b1', title: 'User Authentication', description: 'Implement login/logout functionality', storyPoints: 8, priority: 'high', type: 'feature', sprintId: 'sp1', order: 1 },
+  { id: 'b2', title: 'Dashboard UI', description: 'Create main dashboard interface', storyPoints: 13, priority: 'high', type: 'feature', sprintId: 'sp1', order: 2 },
+  { id: 'b3', title: 'API Integration', description: 'Connect to backend services', storyPoints: 5, priority: 'medium', type: 'technical', sprintId: 'sp2', order: 3 },
+  { id: 'b4', title: 'Performance Optimization', description: 'Improve load times', storyPoints: 8, priority: 'medium', type: 'technical', sprintId: 'sp2', order: 4 },
+  { id: 'b5', title: 'Mobile Responsive', description: 'Ensure mobile compatibility', storyPoints: 5, priority: 'medium', type: 'feature', sprintId: 'sp3', order: 5 },
+  { id: 'b6', title: 'Fix Login Bug', description: 'Address session timeout issue', storyPoints: 3, priority: 'high', type: 'bug', sprintId: 'sp2', order: 6 },
   { id: 'b7', title: 'Database Migration', description: 'Migrate to new schema', storyPoints: 13, priority: 'low', type: 'technical', order: 7 },
-  { id: 'b8', title: 'User Settings', description: 'Add user preferences page', storyPoints: 5, priority: 'low', type: 'feature', order: 8 },
+  { id: 'b8', title: 'User Settings', description: 'Add user preferences page', storyPoints: 5, priority: 'low', type: 'feature', sprintId: 'sp3', order: 8 },
 ];
 
 // Sample Sprints
@@ -145,12 +145,13 @@ export const sampleSprints: Sprint[] = [
 
 // Sample Releases
 export const sampleReleases: Release[] = [
-  { id: 'r1', name: 'MVP Release', version: '1.0.0', targetDate: '2024-02-26', sprints: ['sp1', 'sp2', 'sp3'], status: 'in-progress' },
-  { id: 'r2', name: 'Feature Update', version: '1.1.0', targetDate: '2024-04-01', sprints: [], status: 'planned' },
+  { id: 'rel1', name: 'MVP Release', version: '1.0.0', targetDate: '2024-02-26', sprints: ['sp1', 'sp2', 'sp3'], status: 'in-progress' },
+  { id: 'rel2', name: 'Feature Update', version: '1.1.0', targetDate: '2024-04-01', sprints: [], status: 'planned' },
 ];
 
-// RACI Matrix Data
+// RACI Matrix Data — waterfall + agile phase IDs
 export const sampleRaci: RACIEntry[] = [
+  // Waterfall
   { phaseId: 'init', role: 'Project Manager', responsibility: 'R' },
   { phaseId: 'init', role: 'Sponsor', responsibility: 'A' },
   { phaseId: 'init', role: 'Team Members', responsibility: 'I' },
@@ -171,6 +172,27 @@ export const sampleRaci: RACIEntry[] = [
   { phaseId: 'close', role: 'Sponsor', responsibility: 'A' },
   { phaseId: 'close', role: 'Team Members', responsibility: 'I' },
   { phaseId: 'close', role: 'Stakeholders', responsibility: 'I' },
+  // Agile
+  { phaseId: 'vision', role: 'Product Owner', responsibility: 'A' },
+  { phaseId: 'vision', role: 'Scrum Master', responsibility: 'C' },
+  { phaseId: 'vision', role: 'Development Team', responsibility: 'C' },
+  { phaseId: 'vision', role: 'Stakeholders', responsibility: 'I' },
+  { phaseId: 'release-plan', role: 'Product Owner', responsibility: 'A' },
+  { phaseId: 'release-plan', role: 'Scrum Master', responsibility: 'R' },
+  { phaseId: 'release-plan', role: 'Development Team', responsibility: 'C' },
+  { phaseId: 'release-plan', role: 'Stakeholders', responsibility: 'C' },
+  { phaseId: 'sprint', role: 'Product Owner', responsibility: 'C' },
+  { phaseId: 'sprint', role: 'Scrum Master', responsibility: 'A' },
+  { phaseId: 'sprint', role: 'Development Team', responsibility: 'R' },
+  { phaseId: 'sprint', role: 'Stakeholders', responsibility: 'I' },
+  { phaseId: 'review', role: 'Product Owner', responsibility: 'A' },
+  { phaseId: 'review', role: 'Scrum Master', responsibility: 'R' },
+  { phaseId: 'review', role: 'Development Team', responsibility: 'C' },
+  { phaseId: 'review', role: 'Stakeholders', responsibility: 'C' },
+  { phaseId: 'release', role: 'Product Owner', responsibility: 'A' },
+  { phaseId: 'release', role: 'Scrum Master', responsibility: 'C' },
+  { phaseId: 'release', role: 'Development Team', responsibility: 'R' },
+  { phaseId: 'release', role: 'DevOps', responsibility: 'R' },
 ];
 
 // WBS Data
@@ -187,10 +209,10 @@ export const sampleWbs: WBSNode[] = [
 
 // Risk Register
 export const sampleRisks: Risk[] = [
-  { id: 'r1', title: 'Resource Availability', description: 'Key team members may not be available', probability: 'medium', impact: 'high', score: 12, response: 'mitigate', owner: 'PM', status: 'mitigating' },
-  { id: 'r2', title: 'Scope Creep', description: 'Uncontrolled changes to project scope', probability: 'high', impact: 'high', score: 16, response: 'avoid', owner: 'PM', status: 'analyzing' },
-  { id: 'r3', title: 'Technical Complexity', description: 'Underestimated technical challenges', probability: 'medium', impact: 'medium', score: 9, response: 'mitigate', owner: 'Tech Lead', status: 'identified' },
-  { id: 'r4', title: 'Budget Overrun', description: 'Exceeding allocated budget', probability: 'low', impact: 'critical', score: 8, response: 'transfer', owner: 'PM', status: 'analyzing' },
+  { id: 'risk1', title: 'Resource Availability', description: 'Key team members may not be available', probability: 'medium', impact: 'high', score: 12, response: 'mitigate', owner: 'PM', status: 'mitigating' },
+  { id: 'risk2', title: 'Scope Creep', description: 'Uncontrolled changes to project scope', probability: 'high', impact: 'high', score: 16, response: 'avoid', owner: 'PM', status: 'analyzing' },
+  { id: 'risk3', title: 'Technical Complexity', description: 'Underestimated technical challenges', probability: 'medium', impact: 'medium', score: 9, response: 'mitigate', owner: 'Tech Lead', status: 'identified' },
+  { id: 'risk4', title: 'Budget Overrun', description: 'Exceeding allocated budget', probability: 'low', impact: 'critical', score: 8, response: 'transfer', owner: 'PM', status: 'analyzing' },
 ];
 
 // Stakeholders

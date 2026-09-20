@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { useProject } from '@/contexts/ProjectContext';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { User, Building, Lock } from 'lucide-react';
+import { User, Building, Lock, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Stakeholder } from '@/types/project';
+import { StakeholderDialog } from '@/components/dialogs/StakeholderDialog';
+import { ConfirmDialog } from '@/components/dialogs/ConfirmDialog';
 
 const influenceColors = {
   low: 'bg-muted text-muted-foreground',
@@ -18,9 +23,12 @@ const engagementColors = {
 };
 
 export function StakeholderMatrix() {
-  const { stakeholders } = useProject();
+  const { stakeholders, deleteStakeholder } = useProject();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedStakeholder, setSelectedStakeholder] = useState<Stakeholder | undefined>();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [stakeholderToDelete, setStakeholderToDelete] = useState<string | null>(null);
 
-  // Grid positions for Power/Interest matrix
   const getGridPosition = (influence: string, interest: string) => {
     const x = interest === 'low' ? 0 : interest === 'medium' ? 1 : 2;
     const y = influence === 'low' ? 2 : influence === 'medium' ? 1 : 0;
@@ -33,19 +41,48 @@ export function StakeholderMatrix() {
     ['Monitor', 'Keep Informed', 'Keep Satisfied'],
   ];
 
+  const handleAdd = () => {
+    setSelectedStakeholder(undefined);
+    setDialogOpen(true);
+  };
+
+  const handleEdit = (stakeholder: Stakeholder) => {
+    setSelectedStakeholder(stakeholder);
+    setDialogOpen(true);
+  };
+
+  const handleDeleteClick = (stakeholderId: string) => {
+    setStakeholderToDelete(stakeholderId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (stakeholderToDelete) {
+      deleteStakeholder(stakeholderToDelete);
+      setStakeholderToDelete(null);
+    }
+    setDeleteDialogOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Stakeholder Engagement</h1>
+          <h1 className="text-3xl font-bold text-foreground">Stakeholders</h1>
           <p className="mt-2 text-muted-foreground">
             Power/Interest matrix for stakeholder management
           </p>
         </div>
-        <Badge variant="outline" className="gap-2">
-          <Lock className="h-3 w-3" />
-          Confidential
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="gap-2">
+            <Lock className="h-3 w-3" />
+            Confidential
+          </Badge>
+          <Button onClick={handleAdd} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Add
+          </Button>
+        </div>
       </div>
 
       {/* Power/Interest Matrix */}
@@ -78,10 +115,19 @@ export function StakeholderMatrix() {
                     {stakeholdersInCell.map(s => (
                       <div
                         key={s.id}
-                        className="flex items-center gap-2 rounded bg-card p-2 text-xs shadow-sm border border-border"
+                        className="group flex items-center gap-2 rounded bg-card p-2 text-xs shadow-sm border border-border cursor-pointer hover:border-primary/50"
+                        onClick={() => handleEdit(s)}
                       >
                         <User className="h-3 w-3 text-muted-foreground" />
-                        <span className="font-medium text-foreground truncate">{s.name}</span>
+                        <span className="font-medium text-foreground truncate flex-1">{s.name}</span>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="h-5 w-5 opacity-0 group-hover:opacity-100 text-destructive hover:text-destructive"
+                          onClick={(e) => { e.stopPropagation(); handleDeleteClick(s.id); }}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -92,7 +138,7 @@ export function StakeholderMatrix() {
         </div>
         
         <div className="mt-4 flex justify-end">
-          <p className="text-sm font-medium text-muted-foreground rotate-0">
+          <p className="text-sm font-medium text-muted-foreground">
             ↑ High Power | Low Power ↓
           </p>
         </div>
@@ -113,6 +159,7 @@ export function StakeholderMatrix() {
                 <th className="p-3 text-left text-sm font-medium text-muted-foreground">Influence</th>
                 <th className="p-3 text-left text-sm font-medium text-muted-foreground">Interest</th>
                 <th className="p-3 text-left text-sm font-medium text-muted-foreground">Engagement</th>
+                <th className="p-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -152,12 +199,31 @@ export function StakeholderMatrix() {
                       {stakeholder.engagementLevel}
                     </Badge>
                   </td>
+                  <td className="p-3">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="ghost" size="icon-sm" onClick={() => handleEdit(stakeholder)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon-sm" className="text-destructive hover:text-destructive" onClick={() => handleDeleteClick(stakeholder.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      <StakeholderDialog open={dialogOpen} onOpenChange={setDialogOpen} stakeholder={selectedStakeholder} />
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Stakeholder"
+        description="Are you sure you want to delete this stakeholder? This action cannot be undone."
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 }
