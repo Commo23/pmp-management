@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase/client';
+import { isSupabaseConfigured, supabase } from '@/lib/supabase/client';
 
 interface AuthContextType {
   session: Session | null;
@@ -26,6 +26,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     let mounted = true;
 
     supabase.auth.getSession().then(({ data }) => {
@@ -48,16 +53,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: 'Supabase is not configured. Add VITE_SUPABASE_* env vars on the host.' };
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error: error?.message ?? null };
   }, []);
 
   const signUp = useCallback(async (email: string, password: string) => {
+    if (!isSupabaseConfigured) {
+      return { error: 'Supabase is not configured. Add VITE_SUPABASE_* env vars on the host.' };
+    }
     const { error } = await supabase.auth.signUp({ email, password });
     return { error: error?.message ?? null };
   }, []);
 
   const signOut = useCallback(async () => {
+    if (!isSupabaseConfigured) return;
     await supabase.auth.signOut();
   }, []);
 

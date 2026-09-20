@@ -29,7 +29,7 @@ import {
   sampleGanttTasks,
 } from '@/data/projectData';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase/client';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 import {
   CloudProjectState,
   CloudProjectSummary,
@@ -417,6 +417,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
 
     async function syncCloud() {
+      if (!isSupabaseConfigured) {
+        setCloudProjectId(null);
+        setCloudProjects([]);
+        setCloudReady(false);
+        setSyncStatus('local');
+        return;
+      }
+
       if (!user) {
         setCloudProjectId(null);
         setCloudProjectName('My PMP Project');
